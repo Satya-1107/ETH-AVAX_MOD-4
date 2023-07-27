@@ -10,55 +10,33 @@ This is a smart contract for the Degen Gaming ERC20 token deployed on the Avalan
 ## Proceeding project
 ## Executing program
 
-To run this program, you can use Remix, an online Solidity IDE. To get started, go to the Remix website at https://remix.ethereum.org/.
+## 1. Minting Tokens
 
-Once you are on the Remix website, create a new file by clicking on the "+" icon in the left-hand sidebar. Save the file with a .sol extension (e.g., DegenToken.sol). Copy and paste the following code into the file:
+The contract creator (contract deployer) can mint new tokens by calling the mint function, specifying the recipient address and the amount of tokens to be minted. Only the contract owner can perform this action.
 
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+## 2. Transferring Tokens
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+Users can transfer tokens to other addresses using the standard ERC-20 transfer function. This functionality is inherited from the OpenZeppelin ERC20 implementation.
 
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+## 3. Transferring Tokens on Behalf of Users
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+Users can approve the contract to spend a certain amount of tokens on their behalf, and then the contract can transfer tokens from their account to another address using the transferFrom function. This functionality is also inherited from the OpenZeppelin ERC20 implementation.
 
-contract DegenToken is ERC20, Ownable {
-    constructor() ERC20("Degen", "DGN") {}
+## 4. Approving Token Spending
 
-    function mint(address recipient, uint256 amount) external onlyOwner {
-        _mint(recipient, amount);
-    }
+Users can approve other addresses to spend a certain amount of their tokens using the approve function. This is typically used in combination with the transferFrom function for delegated token transfers.
 
-    function transfer(address recipient, uint256 amount) public override returns (bool) {
-        _transfer(msg.sender, recipient, amount);
-        return true;
-    }
+## 5. Medical Store Items
 
-    function transferFrom(address _from, address recipient, uint256 amount) public override returns (bool) {
-        _transfer(_from, recipient, amount);
-        _approve(from, msg.sender, allowance(from, msg.sender) - amount);
-        return true;
-    }
+The contract has a function medicalstoreitems that provides information about the items available for purchase in the medical store. It logs the available items in the console and returns a string listing the items.
 
-    function approve(address spender, uint256 amount) public override returns (bool) {
-        _approve(msg.sender, spender, amount);
-        return true;
-    }
+## 6. Redeeming Tokens for Medical Store Items
 
-    function redeem(uint256 amount) external {
-        _burn(msg.sender, amount);
-    }
+Users can redeem their tokens for medical store items by calling the reedemTokens function with a _userSelection parameter. Depending on the selection, the user's tokens are transferred to the contract owner's address. The contract checks if the user has enough tokens to perform the redemption.
 
-    function checkBalance(address account) external view returns (uint256) {
-        return balanceOf(account);
-    }
+## 7. Burning Tokens
 
-    function burn(uint256 amount) external {
-        _burn(msg.sender, amount);
-    }
-}
-To compile the code, click on the "Solidity Compiler" tab in the left-hand sidebar. Make sure the "Compiler" option is set to "0.8.4" (or another compatible version), and then click on the "Compile HelloWorld.sol" button.
+Users can burn (destroy) a certain amount of their tokens by calling the burn function, which reduces the total supply of tokens. This function is useful for token holders who want to permanently remove tokens from circulation.
 
 ## Deployment
 
